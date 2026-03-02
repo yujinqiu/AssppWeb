@@ -111,6 +111,9 @@ For projects that was stolen and used heavily:
 
 - [ipatool](https://github.com/majd/ipatool)
 - [Asspp](https://github.com/Lakr233/Asspp)
+- [anisette-js](https://github.com/lbr77/anisette-js)
+- [zsign](https://github.com/zhlynn/zsign) [(forked version)](https://github.com/lbr77/zsign-wasm)
+- [altsign](https://github.com/rileytestut/AltSign/) [(rewritten version)](https://github.com/lbr77/altsign.js)
 
 For friends who helped with testing and feedback:
 
