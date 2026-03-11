@@ -5,10 +5,10 @@ type ThemeType = "light" | "dark" | "system";
 
 interface SettingsState {
   defaultCountry: string;
-  defaultEntity: "iPhone" | "iPad";
+  defaultPlatform: "iOS" | "macOS" | "iPad";
   theme: ThemeType;
   setDefaultCountry: (country: string) => void;
-  setDefaultEntity: (entity: "iPhone" | "iPad") => void;
+  setDefaultPlatform: (platform: "iOS" | "macOS" | "iPad") => void;
   setTheme: (theme: ThemeType) => void;
 }
 
@@ -16,10 +16,10 @@ export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
       defaultCountry: "US",
-      defaultEntity: "iPhone",
+      defaultPlatform: "iOS",
       theme: "system",
       setDefaultCountry: (country) => set({ defaultCountry: country }),
-      setDefaultEntity: (entity) => set({ defaultEntity: entity }),
+      setDefaultPlatform: (platform) => set({ defaultPlatform: platform }),
       setTheme: (theme) => set({ theme }),
     }),
     {

@@ -17,6 +17,7 @@ export interface Software {
   releaseNotes?: string;
   formattedPrice?: string;
   primaryGenreName: string;
+  platform: "iOS" | "macOS";
 }
 
 export interface Cookie {

@@ -21,7 +21,7 @@ export default function SearchPage() {
   const {
     term,
     country,
-    entity,
+    platform,
     results,
     loading,
     error,
@@ -37,11 +37,11 @@ export default function SearchPage() {
 
   useEffect(() => {
     if (!country && initialCountry) setSearchParam({ country: initialCountry });
-    if (!entity && defaultEntity) setSearchParam({ entity: defaultEntity });
-  }, [country, initialCountry, entity, defaultEntity, setSearchParam]);
+    if (!platform) setSearchParam({ platform: "iOS" });
+  }, [country, initialCountry, platform, setSearchParam]);
 
   const activeCountry = country || initialCountry;
-  const activeEntity = entity || defaultEntity;
+  const activePlatform = platform || "iOS";
 
   const availableCountryCodes = Array.from(
     new Set(
@@ -60,7 +60,7 @@ export default function SearchPage() {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!term.trim()) return;
-    search(term.trim(), activeCountry, activeEntity);
+    search(term.trim(), activeCountry, activePlatform);
   }
 
   return (
@@ -91,12 +91,13 @@ export default function SearchPage() {
             className="w-1/2 truncate bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
           />
           <select
-            value={activeEntity}
-            onChange={(e) => setSearchParam({ entity: e.target.value })}
+            value={activePlatform}
+            onChange={(e) => setSearchParam({ platform: e.target.value as "iOS" | "macOS" | "iPad" })}
             className="w-1/2 truncate rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-base text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
           >
-            <option value="iPhone">iPhone</option>
+            <option value="iOS">iOS</option>
             <option value="iPad">iPad</option>
+            <option value="macOS">macOS</option>
           </select>
         </div>
       </form>
@@ -138,9 +139,14 @@ export default function SearchPage() {
             <div className="flex items-center gap-4">
               <AppIcon url={app.artworkUrl} name={app.name} size="md" />
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 dark:text-white truncate">
-                  {app.name}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900 dark:text-white truncate">
+                    {app.name}
+                  </p>
+                  <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 flex-shrink-0">
+                    {app.platform}
+                  </span>
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                   {app.artistName}
                 </p>

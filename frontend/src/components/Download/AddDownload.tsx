@@ -29,6 +29,7 @@ export default function AddDownload() {
   const [bundleId, setBundleId] = useState("");
   const [country, setCountry] = useState(defaultCountry);
   const [countryTouched, setCountryTouched] = useState(false);
+  const [platform, setPlatform] = useState<"iOS" | "macOS">("iOS");
   const [selectedAccount, setSelectedAccount] = useState("");
   const [app, setApp] = useState<Software | null>(null);
   const [versions, setVersions] = useState<string[]>([]);
@@ -87,7 +88,7 @@ export default function AddDownload() {
     if (!bundleId.trim()) return;
     setLoadingAction("lookup");
     try {
-      const result = await lookupApp(bundleId.trim(), country);
+      const result = await lookupApp(bundleId.trim(), country, platform);
       if (!result) {
         addToast(t("downloads.add.notFound"), "error");
         return;
@@ -178,8 +179,17 @@ export default function AddDownload() {
               availableCountryCodes={availableCountryCodes}
               allCountryCodes={allCountryCodes}
               disabled={isLoading}
-              className="w-1/2 truncate disabled:bg-gray-50 dark:disabled:bg-gray-800/50 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed"
+              className="w-1/3 truncate disabled:bg-gray-50 dark:disabled:bg-gray-800/50 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed"
             />
+            <select
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value as "iOS" | "macOS")}
+              className="w-1/6 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-base text-gray-900 dark:text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 truncate disabled:bg-gray-50 dark:disabled:bg-gray-800/50 disabled:text-gray-500 dark:disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+              disabled={isLoading}
+            >
+              <option value="iOS">iOS</option>
+              <option value="macOS">macOS</option>
+            </select>
             <select
               value={selectedAccount}
               onChange={(e) => setSelectedAccount(e.target.value)}
@@ -232,9 +242,14 @@ export default function AddDownload() {
             <div className="flex items-center gap-4 mb-4">
               <AppIcon url={app.artworkUrl} name={app.name} size="md" />
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">
-                  {app.name}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium text-gray-900 dark:text-white">
+                    {app.name}
+                  </p>
+                  <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">
+                    {app.platform}
+                  </span>
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {app.artistName}
                 </p>

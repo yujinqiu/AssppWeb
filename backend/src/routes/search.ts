@@ -4,6 +4,9 @@ const router = Router();
 
 // Map iTunes API fields to our Software type, matching Swift CodingKeys
 function mapSoftware(item: Record<string, any>) {
+  const kind = item.kind as string;
+  const platform = kind === "mac-software" ? "macOS" : "iOS";
+  
   return {
     id: item.trackId,
     bundleID: item.bundleId,
@@ -23,12 +26,21 @@ function mapSoftware(item: Record<string, any>) {
     releaseNotes: item.releaseNotes,
     formattedPrice: item.formattedPrice,
     primaryGenreName: item.primaryGenreName,
+    platform,
   };
 }
 
 router.get("/search", async (req: Request, res: Response) => {
   try {
-    const params = new URLSearchParams(req.query as Record<string, string>);
+    const query = req.query as Record<string, string>;
+    const params = new URLSearchParams(query);
+    
+    // Default to iOS if platform not specified
+    if (!params.has("entity")) {
+      const platform = query.platform || "iOS";
+      params.set("entity", platform === "macOS" ? "macSoftware" : "software");
+    }
+    
     const response = await fetch(
       `https://itunes.apple.com/search?${params.toString()}`,
     );
@@ -43,7 +55,15 @@ router.get("/search", async (req: Request, res: Response) => {
 
 router.get("/lookup", async (req: Request, res: Response) => {
   try {
-    const params = new URLSearchParams(req.query as Record<string, string>);
+    const query = req.query as Record<string, string>;
+    const params = new URLSearchParams(query);
+    
+    // Default to iOS if platform not specified
+    if (!params.has("entity")) {
+      const platform = query.platform || "iOS";
+      params.set("entity", platform === "macOS" ? "macSoftware" : "software");
+    }
+    
     const response = await fetch(
       `https://itunes.apple.com/lookup?${params.toString()}`,
     );

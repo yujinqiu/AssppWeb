@@ -5,30 +5,30 @@ import { searchApps, lookupApp } from "../api/search";
 interface SearchState {
   term: string;
   country: string;
-  entity: string;
+  platform: "iOS" | "macOS" | "iPad";
   results: Software[];
   loading: boolean;
   error: string | null;
   setSearchParam: (
-    param: Partial<Pick<SearchState, "term" | "country" | "entity">>,
+    param: Partial<Pick<SearchState, "term" | "country" | "platform">>,
   ) => void;
-  search: (term: string, country: string, entity: string) => Promise<void>;
-  lookup: (bundleId: string, country: string) => Promise<void>;
-  clear: () => void; // 新增：清空搜索状态的方法
+  search: (term: string, country: string, platform: "iOS" | "macOS" | "iPad") => Promise<void>;
+  lookup: (bundleId: string, country: string, platform: "iOS" | "macOS") => Promise<void>;
+  clear: () => void;
 }
 
 export const useSearch = create<SearchState>((set) => ({
   term: "",
   country: "",
-  entity: "",
+  platform: "iOS",
   results: [],
   loading: false,
   error: null,
   setSearchParam: (param) => set((state) => ({ ...state, ...param })),
-  search: async (term, country, entity) => {
-    set({ loading: true, error: null, term, country, entity });
+  search: async (term, country, platform) => {
+    set({ loading: true, error: null, term, country, platform });
     try {
-      const apps = await searchApps(term, country, entity);
+      const apps = await searchApps(term, country, platform);
       set({ results: apps });
     } catch (e) {
       set({
@@ -39,10 +39,10 @@ export const useSearch = create<SearchState>((set) => ({
       set({ loading: false });
     }
   },
-  lookup: async (bundleId, country) => {
+  lookup: async (bundleId, country, platform) => {
     set({ loading: true, error: null });
     try {
-      const app = await lookupApp(bundleId, country);
+      const app = await lookupApp(bundleId, country, platform);
       set({ results: app ? [app] : [] });
     } catch (e) {
       set({
@@ -53,6 +53,5 @@ export const useSearch = create<SearchState>((set) => ({
       set({ loading: false });
     }
   },
-  // 清空关键词、结果和错误信息，但保留选择的国家和设备类型（作为用户偏好）
   clear: () => set({ term: "", results: [], error: null }),
 }));
