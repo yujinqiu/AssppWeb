@@ -57,6 +57,9 @@ export class ChunkedDownloader {
     contentLength: number;
   }> {
     const res = await fetch(this.url, {
+      headers: {
+        'User-Agent': 'Configurator/2.17 (Macintosh; OS X 15.2; 24C5089c) AppleWebKit/0620.1.16.11.6',
+      },
       method: "HEAD",
       signal,
       redirect: "follow",
@@ -107,6 +110,9 @@ export class ChunkedDownloader {
 
       try {
         const res = await fetch(this.url, {
+          headers: {
+            'User-Agent': 'Configurator/2.17 (Macintosh; OS X 15.2; 24C5089c) AppleWebKit/0620.1.16.11.6',
+          },
           signal: ac.signal,
           redirect: "follow",
           headers: { Range: `bytes=${chunk.start}-${chunk.end}` },
@@ -196,7 +202,13 @@ export class ChunkedDownloader {
 
   /** Single-stream fallback download. */
   private async downloadSingleStream(signal: AbortSignal): Promise<void> {
-    const res = await fetch(this.url, { signal, redirect: "follow" });
+    const res = await fetch(this.url, {
+      headers: {
+        'User-Agent': 'Configurator/2.17 (Macintosh; OS X 15.2; 24C5089c) AppleWebKit/0620.1.16.11.6',
+      },
+      signal,
+      redirect: "follow",
+    });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
     if (!res.body) throw new Error("No response body");
 
