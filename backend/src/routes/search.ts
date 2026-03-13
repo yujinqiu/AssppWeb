@@ -34,6 +34,10 @@ router.get("/search", async (req: Request, res: Response) => {
   try {
     const query = req.query as Record<string, string>;
     const params = new URLSearchParams(query);
+    // Ensure entity is set based on platform
+    if (!params.has("entity") && query.platform) {
+      params.set("entity", query.platform === "macOS" ? "macSoftware" : "software");
+    }
     
     // Default to iOS if platform not specified
     if (!params.has("entity")) {
@@ -57,6 +61,10 @@ router.get("/lookup", async (req: Request, res: Response) => {
   try {
     const query = req.query as Record<string, string>;
     const params = new URLSearchParams(query);
+    // Ensure entity is set based on platform
+    if (!params.has("entity") && query.platform) {
+      params.set("entity", query.platform === "macOS" ? "macSoftware" : "software");
+    }
     
     // Default to iOS if platform not specified
     if (!params.has("entity")) {
